@@ -35,7 +35,7 @@ export class BlogsService {
     const sort = buildSort(q.sort || '-publishedAt');
 
     const [data, total] = await Promise.all([
-      this.model.find(f).sort(sort).skip(skip).limit(limit).lean(),
+      this.model.find(f).sort(sort).skip(skip).limit(limit),
       this.model.countDocuments(f),
     ]);
     return {
@@ -51,14 +51,14 @@ export class BlogsService {
     const skip = (page - 1) * limit;
     const sort = buildSort(q.sort || '-createdAt');
     const [data, total] = await Promise.all([
-      this.model.find(f).sort(sort).skip(skip).limit(limit).lean(),
+      this.model.find(f).sort(sort).skip(skip).limit(limit),
       this.model.countDocuments(f),
     ]);
     return { data, meta: { total, page, limit, pages: Math.max(1, Math.ceil(total / limit)) } };
   }
 
   async findBySlug(slug: string) {
-    const b = await this.model.findOne({ slug, published: true }).lean();
+    const b = await this.model.findOne({ slug, published: true });
     if (!b) throw new NotFoundException('Article not found');
     return b;
   }

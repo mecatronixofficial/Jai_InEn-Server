@@ -60,7 +60,7 @@ class StatsService {
         { $group: { _id: '$status', count: { $sum: 1 } } },
       ]),
       this.testimonials.countDocuments(),
-      this.orders.find().sort({ createdAt: -1 }).limit(5).lean(),
+      this.orders.find().sort({ createdAt: -1 }).limit(5),
     ]);
 
     return {
