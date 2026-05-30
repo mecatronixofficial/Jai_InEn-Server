@@ -100,7 +100,7 @@ class OrdersService {
     const skip = (page - 1) * limit;
     const sort = buildSort(q.sort || '-createdAt');
     const [data, total] = await Promise.all([
-      this.model.find(f).sort(sort).skip(skip).limit(limit).lean(),
+      this.model.find(f).sort(sort).skip(skip).limit(limit),
       this.model.countDocuments(f),
     ]);
     return { data, meta: { total, page, limit, pages: Math.max(1, Math.ceil(total / limit)) } };

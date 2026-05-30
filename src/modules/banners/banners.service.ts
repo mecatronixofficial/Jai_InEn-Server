@@ -14,11 +14,11 @@ export class BannersService {
   async listByKind(kind: BannerKind, publicOnly = true) {
     const f: any = { kind };
     if (publicOnly) f.active = true;
-    return this.model.find(f).sort({ order: 1, createdAt: 1 }).lean();
+    return this.model.find(f).sort({ order: 1, createdAt: 1 });
   }
 
   async listAll() {
-    return this.model.find().sort({ kind: 1, order: 1 }).lean();
+    return this.model.find().sort({ kind: 1, order: 1 });
   }
 
   async findById(id: string) {

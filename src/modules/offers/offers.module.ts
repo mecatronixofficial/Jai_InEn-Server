@@ -38,11 +38,11 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { Role } from '../../common/enums/role.enum';
 
 class CreateOfferDto {
-  @ApiProperty() @IsString() title: string;
-  @ApiProperty() @IsString() description: string;
+  @ApiProperty() @IsString() title!: string;
+  @ApiProperty() @IsString() description!: string;
   @ApiPropertyOptional() @IsOptional() @IsString() code?: string;
-  @ApiProperty() @IsNumber() @Min(0) @Max(100) discountPercent: number;
-  @ApiProperty() @IsDateString() expiresAt: string;
+  @ApiProperty() @IsNumber() @Min(0) @Max(100) discountPercent!: number;
+  @ApiProperty() @IsDateString() expiresAt!: string;
   @ApiPropertyOptional() @IsOptional() @IsString() image?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() ctaLabel?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() ctaHref?: string;
@@ -58,10 +58,9 @@ class OffersService {
   listPublic() {
     return this.model
       .find({ active: true, expiresAt: { $gt: new Date() } })
-      .sort({ order: 1, expiresAt: 1 })
-      .lean();
+      .sort({ order: 1, expiresAt: 1 });
   }
-  listAll() { return this.model.find().sort({ order: 1, expiresAt: 1 }).lean(); }
+  listAll() { return this.model.find().sort({ order: 1, expiresAt: 1 }); }
   async findById(id: string) {
     const x = await this.model.findById(id);
     if (!x) throw new NotFoundException('Offer not found');

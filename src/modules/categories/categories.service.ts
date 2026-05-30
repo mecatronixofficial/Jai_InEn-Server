@@ -15,16 +15,15 @@ export class CategoriesService {
   async listPublic() {
     return this.model
       .find({ active: true })
-      .sort({ order: 1, name: 1 })
-      .lean();
+      .sort({ order: 1, name: 1 });
   }
 
   async listAll() {
-    return this.model.find().sort({ order: 1, name: 1 }).lean();
+    return this.model.find().sort({ order: 1, name: 1 });
   }
 
   async findBySlug(slug: string) {
-    const c = await this.model.findOne({ slug, active: true }).lean();
+    const c = await this.model.findOne({ slug, active: true });
     if (!c) throw new NotFoundException('Category not found');
     return c;
   }

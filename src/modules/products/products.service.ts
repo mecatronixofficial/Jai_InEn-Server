@@ -51,7 +51,7 @@ export class ProductsService {
     const sort = buildSort(q.sort);
 
     const [data, total] = await Promise.all([
-      this.model.find(filter).sort(sort).skip(skip).limit(limit).lean(),
+      this.model.find(filter).sort(sort).skip(skip).limit(limit),
       this.model.countDocuments(filter),
     ]);
 
@@ -69,7 +69,7 @@ export class ProductsService {
     const sort = buildSort(q.sort);
 
     const [data, total] = await Promise.all([
-      this.model.find(filter).sort(sort).skip(skip).limit(limit).lean(),
+      this.model.find(filter).sort(sort).skip(skip).limit(limit),
       this.model.countDocuments(filter),
     ]);
     return {
@@ -79,7 +79,7 @@ export class ProductsService {
   }
 
   async findBySlug(slug: string) {
-    const p = await this.model.findOne({ slug, active: true }).lean();
+    const p = await this.model.findOne({ slug, active: true });
     if (!p) throw new NotFoundException('Product not found');
     return p;
   }
@@ -95,8 +95,7 @@ export class ProductsService {
     if (!current) return [];
     return this.model
       .find({ slug: { $ne: slug }, category: current.category, active: true })
-      .limit(limit)
-      .lean();
+      .limit(limit);
   }
 
   async create(dto: CreateProductDto) {

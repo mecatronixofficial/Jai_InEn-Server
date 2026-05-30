@@ -1,5 +1,5 @@
 import { NestFactory } from "@nestjs/core";
-import { ValidationPipe, Logger } from "@nestjs/common";
+import { ValidationPipe } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import helmet from "helmet";
 
@@ -7,29 +7,17 @@ import { AppModule } from "./app.module";
 import { AllExceptionsFilter } from "./common/filters/all-exceptions.filter";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: false,
-  });
-
-  const logger = new Logger("Bootstrap");
+  const app = await NestFactory.create(AppModule, { cors: false });
 
   const port = Number(process.env.PORT) || 4000;
+  const env = process.env.NODE_ENV || "development";
+  const host = process.env.HOST || `http://localhost:${port}`;
 
-  /* ======================================================
-      SECURITY
-  ====================================================== */
+  /* ── Security ─────────────────────────────────────────────── */
 
-  app.use(
-    helmet({
-      crossOriginResourcePolicy: {
-        policy: "cross-origin",
-      },
-    }),
-  );
+  app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 
-  /* ======================================================
-      CORS
-  ====================================================== */
+  /* ── CORS ─────────────────────────────────────────────────── */
 
   const origins = (process.env.CORS_ORIGINS || "")
     .split(",")
@@ -42,52 +30,38 @@ async function bootstrap() {
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   });
 
-  /* ======================================================
-      GLOBAL PREFIX
-  ====================================================== */
+  /* ── Global prefix ────────────────────────────────────────── */
 
   app.setGlobalPrefix("api/v1");
 
-  /* ======================================================
-      VALIDATION
-  ====================================================== */
+  /* ── Validation ───────────────────────────────────────────── */
 
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
       forbidNonWhitelisted: false,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
+      transformOptions: { enableImplicitConversion: true },
     }),
   );
 
-  /* ======================================================
-      ERROR FILTER
-  ====================================================== */
+  /* ── Exception filter ─────────────────────────────────────── */
 
   app.useGlobalFilters(new AllExceptionsFilter());
 
-  /* ======================================================
-      HEALTH CHECK
-  ====================================================== */
+  /* ── Health check ─────────────────────────────────────────── */
 
-  const server = app.getHttpAdapter();
-
-  server.get("/health", (_req, res) => {
+  app.getHttpAdapter().get("/health", (_req, res) => {
     res.status(200).json({
       success: true,
       status: "ok",
       uptime: process.uptime(),
       timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || "development",
+      environment: env,
     });
   });
 
-  /* ======================================================
-      SWAGGER
-  ====================================================== */
+  /* ── Swagger ──────────────────────────────────────────────── */
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle("Thangavel Textile API")
@@ -99,25 +73,35 @@ async function bootstrap() {
     .addTag("auth", "Authentication")
     .build();
 
-  const doc = SwaggerModule.createDocument(app, swaggerConfig);
-
-  SwaggerModule.setup("api/docs", app, doc, {
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
+  SwaggerModule.setup("api/docs", app, SwaggerModule.createDocument(app, swaggerConfig), {
+    swaggerOptions: { persistAuthorization: true },
   });
 
-  /* ======================================================
-      START SERVER
-  ====================================================== */
+  /* ── Start ────────────────────────────────────────────────── */
 
   await app.listen(port);
 
-  logger.log(`🚀 API running on http://localhost:${port}/api/v1`);
+  const line = "─".repeat(52);
 
-  logger.log(`❤️ Health check http://localhost:${port}/health`);
+  const pad = (label: string, value: string) =>
+    `  ${label.padEnd(14)}${value}`;
 
-  logger.log(`📘 Swagger UI http://localhost:${port}/api/docs`);
+  console.log(`
+\x1b[36m┌${line}┐
+│         Thangavel Textile — API Server               │
+└${line}┘\x1b[0m
+
+${pad("Environment", `\x1b[33m${env}\x1b[0m`)}
+${pad("API Base", `\x1b[32m${host}/api/v1\x1b[0m`)}
+${pad("Health", `\x1b[32m${host}/health\x1b[0m`)}
+${pad("Swagger", `\x1b[32m${host}/api/docs\x1b[0m`)}
+${pad("Port", `\x1b[37m${port}\x1b[0m`)}
+${pad("PID", `\x1b[37m${process.pid}\x1b[0m`)}
+${pad("Node", `\x1b[37m${process.version}\x1b[0m`)}
+${pad("Started", `\x1b[37m${new Date().toLocaleString()}\x1b[0m`)}
+
+\x1b[36m${"─".repeat(54)}\x1b[0m
+`);
 }
 
 bootstrap();
