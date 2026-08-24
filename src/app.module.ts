@@ -15,6 +15,7 @@ import { TestimonialsModule } from './modules/testimonials/testimonials.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { UploadsModule } from './modules/uploads/uploads.module';
 import { StatsModule } from './modules/stats/stats.module';
+import { CertificatesModule } from './modules/certificates/certificates.module';
 import { UsersService } from './modules/users/users.service';
 
 @Module({
@@ -42,6 +43,7 @@ import { UsersService } from './modules/users/users.service';
     OrdersModule,
     UploadsModule,
     StatsModule,
+    CertificatesModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
