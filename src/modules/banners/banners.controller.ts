@@ -26,8 +26,16 @@ export class BannersPublicController {
   @Get('hero')
   hero() { return this.service.listByKind(BannerKind.HERO, true); }
 
+  @Get('about')
+  about() { return this.service.listByKind(BannerKind.ABOUT_BANNER, true); }
+
   @Get('opening-card')
   openingCard() { return this.service.listByKind(BannerKind.OPENING_CARD, true); }
+
+  @Get('page/:pageKey')
+  pageBanner(@Param('pageKey') pageKey: string) {
+    return this.service.findPageBanner(pageKey);
+  }
 }
 
 @ApiTags('admin')

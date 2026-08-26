@@ -21,6 +21,12 @@ export class BannersService {
     return this.model.find().sort({ kind: 1, order: 1 });
   }
 
+  async findPageBanner(pageKey: string) {
+    return this.model
+      .findOne({ kind: BannerKind.PAGE_BANNER, pageKey: pageKey.toLowerCase(), active: true })
+      .sort({ order: 1, createdAt: -1 });
+  }
+
   async findById(id: string) {
     const b = await this.model.findById(id);
     if (!b) throw new NotFoundException('Banner not found');

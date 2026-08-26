@@ -34,4 +34,14 @@ export class CloudinaryProvider {
   get folder() {
     return this.config.get<string>('CLOUDINARY_UPLOAD_FOLDER') || 'thangavel-textile';
   }
+
+  get uploadTimeoutMs() {
+    const configuredTimeout = Number(
+      this.config.get<string>('CLOUDINARY_UPLOAD_TIMEOUT_MS'),
+    );
+
+    return Number.isFinite(configuredTimeout) && configuredTimeout > 0
+      ? configuredTimeout
+      : 120_000;
+  }
 }

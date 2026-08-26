@@ -5,13 +5,17 @@ export type BannerDocument = HydratedDocument<Banner>;
 
 export enum BannerKind {
   HERO = 'hero',
+  ABOUT_BANNER = 'about_banner',
   OPENING_CARD = 'opening_card',
+  PAGE_BANNER = 'page_banner',
 }
 
 @Schema({ timestamps: true })
 export class Banner {
   @Prop({ required: true, enum: BannerKind, index: true })
   kind: BannerKind;
+
+  @Prop({ trim: true, lowercase: true, index: true }) pageKey?: string;
 
   @Prop({ required: true }) title: string;
   @Prop() highlight?: string;
