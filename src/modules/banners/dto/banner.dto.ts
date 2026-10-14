@@ -12,6 +12,7 @@ import { BannerKind } from '../schemas/banner.schema';
 export class CreateBannerDto {
   @ApiProperty({ enum: BannerKind }) @IsEnum(BannerKind) kind: BannerKind;
   @ApiPropertyOptional() @IsOptional() @IsString() pageKey?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() slotKey?: string;
   @ApiProperty() @IsString() title: string;
   @ApiPropertyOptional() @IsOptional() @IsString() highlight?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() subtitle?: string;
