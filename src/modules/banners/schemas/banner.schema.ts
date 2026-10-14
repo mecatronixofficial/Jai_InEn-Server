@@ -8,6 +8,7 @@ export enum BannerKind {
   ABOUT_BANNER = 'about_banner',
   OPENING_CARD = 'opening_card',
   PAGE_BANNER = 'page_banner',
+  SECTION_IMAGE = 'section_image',
 }
 
 @Schema({ timestamps: true })
@@ -16,6 +17,8 @@ export class Banner {
   kind: BannerKind;
 
   @Prop({ trim: true, lowercase: true, index: true }) pageKey?: string;
+
+  @Prop({ trim: true, lowercase: true, index: true }) slotKey?: string;
 
   @Prop({ required: true }) title: string;
   @Prop() highlight?: string;
@@ -35,6 +38,7 @@ export class Banner {
 }
 
 export const BannerSchema = SchemaFactory.createForClass(Banner);
+BannerSchema.index({ kind: 1, pageKey: 1, slotKey: 1, active: 1 });
 BannerSchema.set('toJSON', {
   virtuals: true,
   versionKey: false,

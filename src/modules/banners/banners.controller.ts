@@ -36,6 +36,11 @@ export class BannersPublicController {
   pageBanner(@Param('pageKey') pageKey: string) {
     return this.service.findPageBanner(pageKey);
   }
+
+  @Get('section/:pageKey/:slotKey')
+  sectionImage(@Param('pageKey') pageKey: string, @Param('slotKey') slotKey: string) {
+    return this.service.findSectionImage(pageKey, slotKey);
+  }
 }
 
 @ApiTags('admin')

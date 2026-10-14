@@ -27,6 +27,17 @@ export class BannersService {
       .sort({ order: 1, createdAt: -1 });
   }
 
+  async findSectionImage(pageKey: string, slotKey: string) {
+    return this.model
+      .findOne({
+        kind: BannerKind.SECTION_IMAGE,
+        pageKey: pageKey.toLowerCase(),
+        slotKey: slotKey.toLowerCase(),
+        active: true,
+      })
+      .sort({ order: 1, createdAt: -1 });
+  }
+
   async findById(id: string) {
     const b = await this.model.findById(id);
     if (!b) throw new NotFoundException('Banner not found');
